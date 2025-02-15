@@ -1,0 +1,29 @@
+import java.nio.charset.StandardCharsets
+
+plugins {
+    id 'java'
+}
+
+/* basic project info properties */
+group 'br.com.teste.sistemas'
+version project.version
+description project.name
+
+def defaultCharset = StandardCharsets.UTF_8
+
+repositories {
+    mavenLocal()
+    maven {
+        url = 'https://repo.maven.apache.org/maven2'
+    }
+}
+
+apply from: 'dependencies.gradle'
+
+compileJava {
+    options.encoding = defaultCharset
+}
+
+jar {
+    archiveBaseName = rootProject.name
+}

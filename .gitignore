@@ -1,0 +1,41 @@
+# Gradle files
+.gradle/
+build/
+
+# Local configuration files
+.local/
+*.log
+
+# IntelliJ IDEA files
+*.iml
+.idea/
+out/
+
+# Eclipse files
+.classpath
+.project
+.settings/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Dependency directories
+/dependencies/
+*.jar
+
+# Other common files to ignore
+*.class
+*.war
+*.ear
+*.jar
+*.db
+*.h2.db
+
+# Gradle Wrapper
+gradle-wrapper.jar
+gradle-wrapper.properties
+
+# Generated files
+*.lock
+*.tmp
