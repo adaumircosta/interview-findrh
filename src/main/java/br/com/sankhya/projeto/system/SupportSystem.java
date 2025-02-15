@@ -7,117 +7,112 @@ import java.util.List;
 
 public class SupportSystem {
     private static final Logger logger = Logger.getLogger(SupportSystem.class);
+    private static final List<SupportHandler> handlers = new ArrayList<>();
+
+    static {
+        handlers.add(new Level1SupportHandler());
+        handlers.add(new Level2SupportHandler());
+        handlers.add(new Level3SupportHandler());
+        handlers.add(new Level4SupportHandler());
+    }
 
     public static SupportRequestInfo processSupportRequest(String issue) {
-        return resolveIssue(new SupportRequestInfo(issue), SupportLevel.LEVEL_1);
+
+        SupportRequestInfo request = new SupportRequestInfo(issue);
+        for (SupportHandler handler : handlers) {
+            if (handler.handle(request)) {
+                logger.info("Issue resolved by " + handler.getClass().getSimpleName());
+                return request;
+            }
+        }
+        logger.warn("Issue not resolved by any support level.");
+        return request;
     }
 
-    private static SupportRequestInfo resolveIssue(SupportRequestInfo request, SupportLevel level) {
-        if(level == null){
-            request.addAnalysis("Resume Analysis not resolved :( ...");
-            return request;
-        }
-
-        logger.info("Attempting to resolve issue at " + level + " support level.");
-
-        boolean resolved = false;
-
-        switch (level) {
-            case LEVEL_1:
-                resolved = resolveIssueAtLevel1(request);
-                break;
-            case LEVEL_2:
-                resolved = resolveIssueAtLevel2(request);
-                break;
-            case LEVEL_3:
-                resolved = resolveIssueAtLevel3(request);
-                break;
-            default:
-                logger.error("Unknown support level.");
-                return null;
-        }
-
-        if (!resolved) {
-            logger.warn("Issue not resolved at " + level + " support. Escalating...");
-            return resolveIssue(request, getNextSupportLevel(level));
-        } else {
-            logger.info("Issue resolved at " + level + " support level.");
-            return request;
-        }
+    public interface SupportHandler {
+        boolean handle(SupportRequestInfo request);
     }
 
-    private static SupportLevel getNextSupportLevel(SupportLevel currentLevel) {
-        switch (currentLevel) {
-            case LEVEL_1:
-                return SupportLevel.LEVEL_2;
-            case LEVEL_2:
-                return SupportLevel.LEVEL_3;
-            case LEVEL_3:
-                return null;
-            default:
-                return null;
+    public static class Level1SupportHandler implements SupportHandler {
+
+        @Override
+        public boolean handle(SupportRequestInfo request) {
+
+            logger.info("Level 1 support handling request issue");
+
+            // Simulate problem-solving based on previous analyses
+            boolean resolved = false;
+
+            if (resolved) {
+                logger.info("Issue resolved at Level 1 support.");
+                return true; // Issue resolved
+            } else {
+                logger.warn("Issue not resolved at Level 1 support.");
+                request.addAnalysis("Resume Analysis Level 1 Support...");
+                return false; // Issue not resolved
+            }
         }
     }
 
-    private static boolean resolveIssueAtLevel1(SupportRequestInfo request) {
-        logger.info("Level 1 support handling request issue");
+    public static class Level2SupportHandler implements SupportHandler {
 
-        // Retrieve previous analyses
-        List<String> previousAnalyses = request.getAnalyses();
+        @Override
+        public boolean handle(SupportRequestInfo request) {
 
-        // Simulate problem-solving based on previous analyses
-        boolean resolved = false;
+            logger.info("Level 2 support handling request issue");
 
-        if (resolved) {
-            logger.info("Issue resolved at Level 1 support.");
-            return true; // Issue resolved
-        } else {
-            logger.warn("Issue not resolved at Level 1 support.");
-            request.addAnalysis("Resume Analysis Level 1 Support...");
-            return false; // Issue not resolved
+            // Simulate problem-solving based on previous analyses
+            boolean resolved = false;
+
+            if (resolved) {
+                logger.info("Issue resolved at Level 2 support.");
+                return true; // Issue resolved
+            } else {
+                logger.warn("Issue not resolved at Level 2 support.");
+                request.addAnalysis("Resume Analysis Level 2 Support...");
+                return false; // Issue not resolved
+            }
         }
     }
 
-    private static boolean resolveIssueAtLevel2(SupportRequestInfo request) {
-        logger.info("Level 2 support handling request issue");
-        // Retrieve previous analyses
-        List<String> previousAnalyses = request.getAnalyses();
+    public static class Level3SupportHandler implements SupportHandler {
+        @Override
+        public boolean handle(SupportRequestInfo request) {
 
-        // Simulate problem-solving based on previous analyses
-        boolean resolved = false;
+            logger.info("Level 3 support handling request issue");
 
-        if (resolved) {
-            logger.info("Issue resolved at Level 2 support.");
-            return true; // Issue resolved
-        } else {
-            logger.warn("Issue not resolved at Level 2 support.");
-            request.addAnalysis("Resume Analysis Level 2 Support...");
-            return false; // Issue not resolved
+            // Simulate problem-solving based on previous analyses
+            boolean resolved = false;
+
+            if (resolved) {
+                logger.info("Issue resolved at Level 3 support.");
+                return true; // Issue resolved
+            } else {
+                logger.warn("Issue not resolved at Level 3 support.");
+                request.addAnalysis("Resume Analysis Level 3 Support...");
+                return false; // Issue not resolved
+            }
         }
     }
 
-    private static boolean resolveIssueAtLevel3(SupportRequestInfo request) {
-        logger.info("Level 3 support handling request issue");
-        // Retrieve previous analyses
-        List<String> previousAnalyses = request.getAnalyses();
+    public static class Level4SupportHandler implements SupportHandler {
+        @Override
+        public boolean handle(SupportRequestInfo request) {
 
-        // Simulate problem-solving based on previous analyses
-        boolean resolved = false;
+            logger.info("Level 4 support handling request issue");
 
-        if (resolved) {
-            logger.info("Issue resolved at Level 3 support.");
-            return true; // Issue resolved
-        } else {
-            logger.warn("Issue not resolved at Level 3 support.");
-            request.addAnalysis("Resume Analysis Level 3 Support...");
-            return false; // Issue not resolved
+            // Simulate problem-solving based on previous analyses
+            boolean resolved = true;
+
+            if (resolved) {
+                logger.info("Issue resolved at Level 4 support.");
+                return true; // Issue resolved
+            } else {
+                logger.warn("Issue not resolved at Level 4 support.");
+                request.addAnalysis("Resume Analysis Level 3 Support...");
+                return false; // Issue not resolved
+            }
         }
-    }
-
-    private static enum SupportLevel {
-        LEVEL_1,
-        LEVEL_2,
-        LEVEL_3;
     }
 
     public static class SupportRequestInfo {
@@ -129,16 +124,8 @@ public class SupportSystem {
             this.analyses = new ArrayList<>();
         }
 
-        public String getIssue() {
-            return issue;
-        }
-
         public void addAnalysis(String analysis) {
             analyses.add(analysis);
-        }
-
-        public List<String> getAnalyses() {
-            return new ArrayList<>(analyses);
         }
 
         @Override
